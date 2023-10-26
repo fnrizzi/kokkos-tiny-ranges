@@ -23,8 +23,10 @@ public:
     , count_(count)
   {}
 
+  KOKKOS_FUNCTION
   std::size_t size() const{ return count_; }
 
+  KOKKOS_FUNCTION
   reference_type operator()(int n) const {
     return base_(n);
   }
@@ -41,10 +43,39 @@ public:
   ReverseProxy() = default;
   explicit ReverseProxy(RangeT base) : base_(base){}
 
+  KOKKOS_FUNCTION
   std::size_t size() const{ return base_.size(); }
 
+  KOKKOS_FUNCTION
   reference_type operator()(int n) const {
     return base_(base_.size()-1-n);
+  }
+};
+
+template <class Base, class Shifts, class PredType>
+struct MyFunc {
+  Base m_base;
+  Shifts m_shifts;
+  PredType m_pred;
+
+  KOKKOS_FUNCTION
+  MyFunc(Base b, Shifts s, PredType pred)
+    : m_base(b), m_shifts(s), m_pred(pred){}
+
+  KOKKOS_FUNCTION
+  void operator()(const int i, int& update,
+                  const bool final_pass) const
+  {
+    const auto& myval = m_base(i);
+    if (final_pass) {
+      if (m_pred(myval)) {
+        m_shifts[update] = i;
+      }
+    }
+
+    if (m_pred(myval)) {
+      update += 1;
+    }
   }
 };
 
@@ -66,22 +97,16 @@ public:
   explicit NonLazyFilterProxy(RangeT base, Pred pred)
     : base_(base), pred_(pred), shifts_("shifts", base.size())
   {
-    Kokkos::View<int> count("count");
-    Kokkos::parallel_for(1,
-       KOKKOS_LAMBDA(int /*i*/){
-         count()=0;
-         for (int k=0; k<base_.size(); ++k){
-           if (pred(base_(k))){
-             shifts_(count()++) = k;
-           }
-         }
-       });
-    auto count_h = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), count);
-    Kokkos::resize(shifts_, count_h());
+    int count = 0;
+    ::Kokkos::parallel_scan("nonlazyfilter", base_.size(),
+                            MyFunc(base_, shifts_, pred), count);
+    Kokkos::resize(shifts_, count);
   }
 
+  KOKKOS_FUNCTION
   std::size_t size() const{ return shifts_.extent(0); }
 
+  KOKKOS_FUNCTION
   reference_type operator()(int n) const{
     return base_(shifts_[n]);
   }
