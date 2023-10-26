@@ -1,7 +1,5 @@
 # kokkos-tiny-ranges
 
-Example:
-
 ```cpp
 
 struct IsEven{
@@ -22,12 +20,12 @@ struct MyFunc{
   }
 };
 
-// 1.
+// example 1
 Kokkos::View<int*> view("v", 110);
 auto p = view | Kokkos::nonlazy_filter(IsEven());
 Kokkos::parallel_for(p.size(), MyFunc(p));
 
-// 2.
+// example 2
 Kokkos::View<int*> view("v", 110);
 auto p = view | Kokkos::nonlazy_filter(IsEven()) | Kokkos::reverse() | Kokkos::take(2);
 Kokkos::parallel_for(p.size(), MyFunc(p));
