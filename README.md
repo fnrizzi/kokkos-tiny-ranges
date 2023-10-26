@@ -3,9 +3,7 @@
 ```cpp
 
 struct IsEven{
-  KOKKOS_FUNCTION bool operator()(int v) const{
-    return v % 2 == 0;
-  };
+  KOKKOS_FUNCTION bool operator()(int v) const{ return v % 2 == 0; };
 };
 
 template<class RangeT>
