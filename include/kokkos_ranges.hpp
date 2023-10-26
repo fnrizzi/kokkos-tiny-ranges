@@ -4,6 +4,7 @@
 
 #include <Kokkos_Core.hpp>
 
+namespace Kokkos{
 namespace details{
 
 template<class RangeT>
@@ -173,4 +174,5 @@ auto operator | (R&& r, T const & a){
   return a(std::forward<R>(r));
 }
 
+}
 #endif

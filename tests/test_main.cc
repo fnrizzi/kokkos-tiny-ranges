@@ -76,7 +76,7 @@ struct IsEven{
 TEST(something, filter)
 {
   auto kv = create_kokkos_view(10);
-  auto p = kv | nonlazy_filter(IsEven());
+  auto p = kv | Kokkos::nonlazy_filter(IsEven());
   auto p_view = proxy_to_host_view_via_parfor(p);
   print(p_view);
   std::vector<int> gold = {0,2,4,6,8};
@@ -86,7 +86,7 @@ TEST(something, filter)
 TEST(something, filter_take)
 {
   auto kv = create_kokkos_view(10);
-  auto p = kv | nonlazy_filter(IsEven()) | take(2);
+  auto p = kv | Kokkos::nonlazy_filter(IsEven()) | Kokkos::take(2);
   auto p_view = proxy_to_host_view_via_parfor(p);
   print(p_view);
   std::vector<int> gold = {0,2};
@@ -96,7 +96,7 @@ TEST(something, filter_take)
 TEST(something, take_filter)
 {
   auto kv = create_kokkos_view(20);
-  auto p = kv | take(10) | nonlazy_filter(IsEven());
+  auto p = kv | Kokkos::take(10) | Kokkos::nonlazy_filter(IsEven());
   auto p_view = proxy_to_host_view_via_parfor(p);
   print(p_view);
   std::vector<int> gold = {0,2,4,6,8};
@@ -106,7 +106,7 @@ TEST(something, take_filter)
 TEST(something, reverse)
 {
   auto kv = create_kokkos_view(10);
-  auto p = kv | reverse();
+  auto p = kv | Kokkos::reverse();
   auto p_view = proxy_to_host_view_via_parfor(p);
   print(p_view);
   std::vector<int> gold = {9,8,7,6,5,4,3,2,1,0};
@@ -116,7 +116,7 @@ TEST(something, reverse)
 TEST(something, filter_reverse)
 {
   auto kv = create_kokkos_view(10);
-  auto p = kv | nonlazy_filter(IsEven()) | reverse();
+  auto p = kv | Kokkos::nonlazy_filter(IsEven()) | Kokkos::reverse();
   auto p_view = proxy_to_host_view_via_parfor(p);
   print(p_view);
   std::vector<int> gold = {8,6,4,2,0};
@@ -126,7 +126,7 @@ TEST(something, filter_reverse)
 TEST(something, filter_reverse_take)
 {
   auto kv = create_kokkos_view(10);
-  auto p = kv | nonlazy_filter(IsEven()) | reverse() | take(2);
+  auto p = kv | Kokkos::nonlazy_filter(IsEven()) | Kokkos::reverse() | Kokkos::take(2);
   auto p_view = proxy_to_host_view_via_parfor(p);
   print(p_view);
   std::vector<int> gold = {8,6};
