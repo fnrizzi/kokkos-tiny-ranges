@@ -10,10 +10,11 @@ template<class RangeT>
 struct MyFunc{
   RangeT r_;
 
+  KOKKOS_FUNCTION
   MyFunc(RangeT r) : r_(r){}
 
   KOKKOS_FUNCTION void operator()(int i) const{
-   auto values = r_(i);
+   auto value = r_(i);
    // do soemthing
   }
 };
