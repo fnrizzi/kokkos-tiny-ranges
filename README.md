@@ -1,5 +1,12 @@
 # kokkos-tiny-ranges
 
+## Disclaimer 
+
+This is very much WIP, purely just a prototype to play with (missing pretty much all the fine-grained details, proper semantics, etc...)
+but it works! 
+
+## Snippets 
+
 ```cpp
 
 struct IsEven{
