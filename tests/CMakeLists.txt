@@ -10,7 +10,7 @@ macro(add_utest_kokkos TESTNAME TESTSRCS)
   add_test(NAME ${testNameFinal} COMMAND ${testNameFinal})
 endmacro()
 
-set(NAMES "main")
+set(NAMES "all")
 foreach(id IN LISTS NAMES)
   set(TEST test_${id})
   add_utest_kokkos(${TEST} ${CMAKE_CURRENT_SOURCE_DIR}/${TEST}.cc)
